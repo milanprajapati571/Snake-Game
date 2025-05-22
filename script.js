@@ -10,6 +10,7 @@ let velocityX = 0, velocityY = 0;
 let snakeBody = [];
 let setIntervalId;
 let score = 0;
+let isPaused = false;
 
 // Getting high score from the local storage
 let highScore = localStorage.getItem("high-score") || 0;
@@ -41,13 +42,15 @@ const resetGame = () => {
 };
 
 const handleGameOver = () => {
+    pauseBtn.disabled = true;
+    // pauseBtn.innerText = "Game Over";
     clearInterval(setIntervalId);
     gameoverSound.play();
     document.getElementById("final-score").innerText = score;
     document.getElementById("game-over-overlay").classList.remove("hidden");
 
     const restartListener = (e) => {
-        if (e.key === "Enter" || e.key === " ") {
+        if (e.key === "Enter") {
             document.removeEventListener("keydown", restartListener);
             resetGame();
         }
@@ -117,8 +120,6 @@ document.addEventListener("touchend", (e) => {
   }
 }, false);
 
-let isPaused = false;
-
 const initGame = () => {
     if (isPaused) return;  // Don't run game loop if paused
     // if (gameOver) return handleGameOver();
@@ -163,19 +164,25 @@ const initGame = () => {
 }
 
 const pauseBtn = document.getElementById("pauseBtn");
+
 pauseBtn.addEventListener("click", () => {
-    isPaused = !isPaused;
-    pauseBtn.innerText = isPaused ? "Play" : "Pause";
+  if (gameOver) return;
+  isPaused = !isPaused;
+  pauseBtn.innerText = isPaused ? "Play" : "Pause";
 });
 
 document.addEventListener("keydown", (e) => {
-    if (e.code === "Space") {
-        e.preventDefault(); // Prevent browser navigation
-        isPaused = !isPaused;
-        pauseBtn.innerText = isPaused ? "Play" : "Pause";
-    }
-});
+  if (e.code === "Space") {
+    if (gameOver) return;
+    e.preventDefault();
+    isPaused = !isPaused;
+    pauseBtn.innerText = isPaused ? "Play" : "Pause";
+  }
 
+  if (e.code === "Enter" && gameOver) {
+    location.reload(); // Restart game
+  }
+});
 
 updateFoodPosition();
 setIntervalId = setInterval(initGame, 100);
