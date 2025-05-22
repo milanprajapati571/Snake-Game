@@ -109,6 +109,22 @@ body {
   cursor: pointer;
 }
 
+#pauseBtn {
+  background-color: #445675;
+  border: none;
+  padding: 5px 10px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #212837;
+  transition: background-color 0.3s;
+}
+
+#pauseBtn:hover {
+  background-color: #0765f1;
+}
+
+
 @media screen and (max-width: 500px) {
   .controls {
     display: none !important;

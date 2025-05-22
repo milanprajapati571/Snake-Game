@@ -117,8 +117,11 @@ document.addEventListener("touchend", (e) => {
   }
 }, false);
 
+let isPaused = false;
 
 const initGame = () => {
+    if (isPaused) return;  // Don't run game loop if paused
+    // if (gameOver) return handleGameOver();
     if(gameOver) return handleGameOver();
     let html = `<div class="food" style="grid-area: ${foodY} / ${foodX}"></div>`;
 
@@ -158,6 +161,21 @@ const initGame = () => {
     }
     playBoard.innerHTML = html;
 }
+
+const pauseBtn = document.getElementById("pauseBtn");
+pauseBtn.addEventListener("click", () => {
+    isPaused = !isPaused;
+    pauseBtn.innerText = isPaused ? "Play" : "Pause";
+});
+
+document.addEventListener("keydown", (e) => {
+    if (e.code === "Space") {
+        e.preventDefault(); // Prevent browser navigation
+        isPaused = !isPaused;
+        pauseBtn.innerText = isPaused ? "Play" : "Pause";
+    }
+});
+
 
 updateFoodPosition();
 setIntervalId = setInterval(initGame, 100);
