@@ -21,12 +21,42 @@ const updateFoodPosition = () => {
     foodY = Math.floor(Math.random() * 30) + 1;
 }
 
+const eatSound = document.getElementById("eat-sound");
+const gameoverSound = document.getElementById("gameover-sound");
+eatSound.play();
+gameoverSound.play();
+
+const resetGame = () => {
+    snakeX = 5;
+    snakeY = 5;
+    velocityX = 0;
+    velocityY = 0;
+    snakeBody = [];
+    gameOver = false;
+    score = 0;
+    scoreElement.innerText = `Score: ${score}`;
+    updateFoodPosition();
+    document.getElementById("game-over-overlay").classList.add("hidden");
+    setIntervalId = setInterval(initGame, 100);
+};
+
 const handleGameOver = () => {
-    // Clearing the timer and reloading the page on game over
     clearInterval(setIntervalId);
-    alert("Game Over! Press OK to replay...");
-    location.reload();
-}
+    gameoverSound.play();
+    document.getElementById("final-score").innerText = score;
+    document.getElementById("game-over-overlay").classList.remove("hidden");
+
+    const restartListener = (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+            document.removeEventListener("keydown", restartListener);
+            resetGame();
+        }
+    };
+
+    document.addEventListener("keydown", restartListener);
+};
+
+
 
 const changeDirection = e => {
     // Changing velocity value based on key press
@@ -48,6 +78,46 @@ const changeDirection = e => {
 // Calling changeDirection on each key click and passing key dataset value as an object
 controls.forEach(button => button.addEventListener("click", () => changeDirection({ key: button.dataset.key })));
 
+let touchStartX = 0;
+let touchStartY = 0;
+
+document.addEventListener("touchstart", (e) => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+}, false);
+
+document.addEventListener("touchend", (e) => {
+  const touchEndX = e.changedTouches[0].clientX;
+  const touchEndY = e.changedTouches[0].clientY;
+
+  const dx = touchEndX - touchStartX;
+  const dy = touchEndY - touchStartY;
+
+  // Check if swipe distance is enough (prevent accidental touch)
+  if (Math.abs(dx) > Math.abs(dy)) {
+    if (dx > 30 && velocityX !== -1) {
+      // Right swipe
+      velocityX = 1;
+      velocityY = 0;
+    } else if (dx < -30 && velocityX !== 1) {
+      // Left swipe
+      velocityX = -1;
+      velocityY = 0;
+    }
+  } else {
+    if (dy > 30 && velocityY !== -1) {
+      // Down swipe
+      velocityX = 0;
+      velocityY = 1;
+    } else if (dy < -30 && velocityY !== 1) {
+      // Up swipe
+      velocityX = 0;
+      velocityY = -1;
+    }
+  }
+}, false);
+
+
 const initGame = () => {
     if(gameOver) return handleGameOver();
     let html = `<div class="food" style="grid-area: ${foodY} / ${foodX}"></div>`;
@@ -55,7 +125,8 @@ const initGame = () => {
     // Checking if the snake hit the food
     if(snakeX === foodX && snakeY === foodY) {
         updateFoodPosition();
-        snakeBody.push([foodY, foodX]); // Pushing food position to snake body array
+        // snakeBody.push([foodY, foodX]); // Pushing food position to snake body array
+        snakeBody.push([snakeX, snakeY]);
         score++; // increment score by 1
         highScore = score >= highScore ? score : highScore;
         localStorage.setItem("high-score", highScore);

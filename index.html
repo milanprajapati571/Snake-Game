@@ -1,14 +1,33 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <title>Snake Game</title>
-    <link rel="stylesheet" href="style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+    />
     <script src="script.js" defer></script>
   </head>
   <body>
+    <audio
+      id="eat-sound"
+      src="https://cdn.pixabay.com/audio/2022/03/15/audio_4cfb5e7b97.mp3"
+    ></audio>
+    <audio
+      id="gameover-sound"
+      src="https://cdn.pixabay.com/audio/2022/03/15/audio_183c6fba8e.mp3"
+    ></audio>
+
+    <div id="game-over-overlay" class="overlay hidden">
+      <div class="message">
+        <h2>Game Over</h2>
+        <p>Your score: <span id="final-score">0</span></p>
+        <button onclick="location.reload()">Play Again</button>
+      </div>
+    </div>
     <div class="wrapper">
       <div class="game-details">
         <span class="score">Score: 0</span>
@@ -24,8 +43,13 @@
     </div>
 
     <footer>
-      <p>Developed by <strong>Milan Prajapati</strong> |
-        <a href="https://github.com/milanprajapati571" target="_blank" rel="noopener">
+      <p>
+        Developed by <strong>Milan Prajapati</strong> |
+        <a
+          href="https://github.com/milanprajapati571"
+          target="_blank"
+          rel="noopener"
+        >
           <i class="fa-brands fa-github"></i> GitHub
         </a>
       </p>
